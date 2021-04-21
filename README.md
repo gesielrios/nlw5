@@ -63,9 +63,6 @@ The project layout is available on <a href="https://www.figma.com/file/is9KGod2K
 This project is licensed under the MIT License. See the <a href="https://github.com/Goytai/NLW5/blob/master/LICENSE">LICENSE</a> file for details.
 
 ------------
-<h2 align="center">
-    <img src="/.github/nlw5.png" alt="Next Level Week"/>
-</h2>
 
 NLW is an online event with lots of code, challenges, networking and a single objective: to take you to the next level.
 
