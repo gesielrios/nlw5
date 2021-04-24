@@ -7,6 +7,8 @@ import { api } from '../services/api';
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 
 import styles from './home.module.scss';
+import { useContext } from 'react';
+import { PlayerContext } from '../contexts/PlayerContext';
 
 type Epsode = {
   id: string;
@@ -17,14 +19,17 @@ type Epsode = {
   duration: number;
   durationAsString: string;
   url: string;
-}
+};
 
 type HomeProps = {
   latestEpsodes: Epsode[];
   allEpsodes: Epsode[];
-}
+};
 
 export default function Home(props: HomeProps) {
+
+  const { play } = useContext(PlayerContext);
+
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpsodes}>
@@ -50,7 +55,13 @@ export default function Home(props: HomeProps) {
                   <span>{epsode.durationAsString}</span>
                 </div>
                 
-                <button type="button">
+                <button 
+                  type="button" 
+                  onClick={
+                    () => {
+                      play(epsode);
+                    }
+                  }>
                   <img src="/play-green.svg" alt="tocar episódio" />
                 </button>
               </li>
@@ -105,8 +116,8 @@ export default function Home(props: HomeProps) {
           </table>
       </section>
     </div> 
-  )
-}
+  );
+};
 
 export const getStaticProps: GetStaticProps = async () => {
   const { data } = await api.get('episodes', {
@@ -139,5 +150,5 @@ export const getStaticProps: GetStaticProps = async () => {
       allEpsodes,
     },
     revalidate: 60 * 60 * 8,
-  }
-}
+  };
+};
