@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
+import Head from 'next/head';
 import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
 import ptBR  from 'date-fns/locale/pt-BR';
@@ -7,8 +8,7 @@ import { api } from '../services/api';
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 
 import styles from './home.module.scss';
-import { useContext } from 'react';
-import { PlayerContext } from '../contexts/PlayerContext';
+import { usePayer } from '../contexts/PlayerContext';
 
 type Epsode = {
   id: string;
@@ -26,16 +26,22 @@ type HomeProps = {
   allEpsodes: Epsode[];
 };
 
-export default function Home(props: HomeProps) {
+export default function Home({latestEpsodes, allEpsodes}: HomeProps) {
 
-  const { play } = useContext(PlayerContext);
+  const { playList } = usePayer();
+  const epsodeList = [...latestEpsodes, ...allEpsodes];
 
   return (
     <div className={styles.homepage}>
+
+      <Head>
+        <title>Home | Podcastr</title>
+      </Head>
+
       <section className={styles.latestEpsodes}>
         <h2>Últimos lançamentos</h2>
         <ul>
-          {props.latestEpsodes.map(epsode => {
+          {latestEpsodes.map((epsode, index) => {
             return (
               <li key={epsode.id}>
                 <Image 
@@ -59,7 +65,7 @@ export default function Home(props: HomeProps) {
                   type="button" 
                   onClick={
                     () => {
-                      play(epsode);
+                      playList(epsodeList, index);
                     }
                   }>
                   <img src="/play-green.svg" alt="tocar episódio" />
@@ -85,7 +91,7 @@ export default function Home(props: HomeProps) {
               </tr>
             </thead>
             <tbody>
-              {props.allEpsodes.map(epsode => {
+              {allEpsodes.map((epsode, index) => {
                 return (
                   <tr key={epsode.id}>
                     <td style={{ width:72 }}>
@@ -105,7 +111,12 @@ export default function Home(props: HomeProps) {
                     <td style={{ width:120 }}>{epsode.publishedAt}</td>
                     <td>{epsode.durationAsString}</td>
                     <td>
-                      <button type="button">
+                      <button 
+                        type="button" 
+                        onClick={
+                          () => playList(epsodeList, index + latestEpsodes.length)
+                        }
+                      >
                         <img src="/play-green.svg" alt="Tocar episódio" />
                       </button>
                     </td>

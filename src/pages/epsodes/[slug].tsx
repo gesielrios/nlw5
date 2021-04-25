@@ -3,9 +3,11 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 import { api } from '../../services/api';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString';
 import style from './epsode.module.scss';
+import { usePayer } from '../../contexts/PlayerContext';
 
 type Epsode = {
     id: string;
@@ -24,8 +26,16 @@ type EpsodeProps = {
 };
 
 export default function Epsode({ epsode }:EpsodeProps) {
+
+    const { play } = usePayer();
+
     return (
         <div className={style.epsodeContainer}>
+
+            <Head>
+                <title>{epsode.title} | Podcastr</title>
+            </Head>
+
             <div className={style.epsode}>
                 <div className={style.thumbnailContainer}>
                     <Link href="/">
@@ -33,8 +43,16 @@ export default function Epsode({ epsode }:EpsodeProps) {
                             <img src="/arrow-left.svg" alt="Voltar" />
                         </button>
                     </Link>
-                    <Image width={700} height={160} src={epsode.thumbnail} objectFit="cover" />
-                    <button type="button">
+                    <Image 
+                        width={700} 
+                        height={160} 
+                        src={epsode.thumbnail} 
+                        objectFit="cover" 
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => {play(epsode)}}
+                    >
                         <img src="/play.svg" alt="Tocar episódio" />
                     </button>
                 </div>
